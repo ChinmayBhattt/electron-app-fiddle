@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <!-- Content Security Policy to allow Tailwind CDN and Phosphor Icons -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.w3.org;">
+  <title>Personal Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: '#6366f1',
+            brandDark: '#4f46e5',
+            surface: 'rgba(30, 41, 59, 0.7)',
+            surfaceHover: 'rgba(51, 65, 85, 0.8)',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom Titlebar exact styling */
+    .titlebar {
+      -webkit-app-region: drag;
+      user-select: none;
+    }
+    .titlebar-btn {
+      -webkit-app-region: no-drag;
+    }
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    /* Glassmorphism */
+    .glass {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    body {
+      overflow: hidden; /* App is full height, individual sections scroll */
+    }
+  </style>
+  <!-- Phosphor Icons for premium look -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 h-screen w-screen flex flex-col font-sans transition-colors duration-300">
+  
+  <!-- Custom Titlebar -->
+  <header class="titlebar h-10 w-full flex justify-between items-center px-4 bg-gray-200 dark:bg-[#0f172a] border-b border-gray-300 dark:border-gray-800 shrink-0 z-50">
+    <div class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+      <i class="ph ph-squares-four text-brand"></i>
+      <span>Personal Dashboard</span>
+    </div>
+    <div class="flex items-center gap-3 titlebar-btn text-lg">
+      <button id="btn-minimize" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors">
+        <i class="ph ph-minus"></i>
+      </button>
+      <button id="btn-maximize" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors">
+        <i class="ph ph-square"></i>
+      </button>
+      <button id="btn-close" class="p-1 rounded hover:bg-red-500 hover:text-white dark:hover:bg-red-500 text-gray-600 dark:text-gray-400 transition-colors">
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    <nav class="w-64 glass flex flex-col border-r border-gray-200 dark:border-gray-800 shrink-0 relative transition-all duration-300">
+      <div class="p-6">
+        <div class="flex items-center gap-4 mb-8">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-brand to-purple-500 flex items-center justify-center text-white shadow-lg shadow-brand/20">
+            <i class="ph ph-user text-2xl"></i>
+          </div>
+          <div>
+            <h2 class="font-semibold text-sm">Welcome back,</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Productivity Mode</p>
+          </div>
+        </div>
+
+        <ul class="space-y-2">
+          <li>
+            <button data-target="dashboard-view" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-brand/10 text-brand font-medium transition-all group">
+              <i class="ph ph-chart-pie-slice text-xl group-hover:scale-110 transition-transform"></i>
+              Dashboard
+            </button>
+          </li>
+          <li>
+            <button data-target="notes-view" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-surface font-medium transition-all group">
+              <i class="ph ph-notebook text-xl group-hover:scale-110 transition-transform"></i>
+              Notes
+            </button>
+          </li>
+          <li>
+            <button data-target="tasks-view" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-surface font-medium transition-all group">
+              <i class="ph ph-check-square-offset text-xl group-hover:scale-110 transition-transform"></i>
+              Tasks
+            </button>
+          </li>
+          <li>
+            <button data-target="settings-view" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-surface font-medium transition-all group">
+              <i class="ph ph-gear text-xl group-hover:scale-110 transition-transform"></i>
+              Settings
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-auto p-6">
+        <button id="theme-toggle" class="w-full flex items-center justify-between px-5 py-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-surface transition-colors">
+          <span class="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <i class="ph ph-moon dark:hidden"></i>
+            <i class="ph ph-sun hidden dark:block text-yellow-400"></i>
+            <span class="dark:hidden">Dark Mode</span>
+            <span class="hidden dark:block">Light Mode</span>
+          </span>
+          <div class="w-10 h-5 bg-gray-300 dark:bg-brand rounded-full relative transition-colors focus:outline-none">
+            <div class="absolute w-4 h-4 bg-white rounded-full top-0.5 left-0.5 dark:translate-x-5 transition-transform"></div>
+          </div>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="flex-1 overflow-y-auto bg-white dark:bg-[#0f172a] relative">
+      <!-- Views -->
+      <div id="dashboard-view" class="view-section p-10 space-y-10 fade-in">
+        <header>
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white" id="greeting">Good Morning</h1>
+          <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Here's an overview of your productivity today.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-brand/50 transition-colors group">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-4 bg-brand/10 text-brand rounded-2xl group-hover:scale-110 transition-transform">
+                <i class="ph ph-notebook text-3xl"></i>
+              </div>
+            </div>
+            <h3 class="text-4xl font-bold text-gray-900 dark:text-white mb-1" id="stat-notes">0</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Notes</p>
+          </div>
+          
+          <div class="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-green-500/50 transition-colors group">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-4 bg-green-500/10 text-green-500 rounded-2xl group-hover:scale-110 transition-transform">
+                <i class="ph ph-check-circle text-3xl"></i>
+              </div>
+            </div>
+            <h3 class="text-4xl font-bold text-gray-900 dark:text-white mb-1" id="stat-tasks-done">0</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Completed Tasks</p>
+          </div>
+
+          <div class="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-orange-500/50 transition-colors group">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-4 bg-orange-500/10 text-orange-500 rounded-2xl group-hover:scale-110 transition-transform">
+                <i class="ph ph-clock text-3xl"></i>
+              </div>
+            </div>
+            <h3 class="text-4xl font-bold text-gray-900 dark:text-white mb-1" id="stat-tasks-pending">0</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Pending Tasks</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+          <div class="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800">
+            <h3 class="font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2 text-xl">
+              <i class="ph ph-lightning text-brand"></i> Quick Actions
+            </h3>
+            <div class="flex gap-4">
+              <button onclick="switchView('notes-view'); document.getElementById('btn-new-note').click();" class="flex-1 py-4 px-6 bg-brand hover:bg-brandDark text-white rounded-2xl font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-brand/20">
+                <i class="ph ph-plus-circle text-xl"></i> New Note <kbd class="opacity-70 text-xs ml-2 border border-white/30 bg-white/10 rounded px-1.5 py-0.5">Ctrl+N</kbd>
+              </button>
+              <button onclick="switchView('tasks-view'); setTimeout(() => document.getElementById('task-input').focus(), 100);" class="flex-1 py-4 px-6 bg-gray-200 dark:bg-surface hover:bg-gray-300 dark:hover:bg-surfaceHover text-gray-900 dark:text-white border border-transparent dark:border-gray-700 rounded-2xl font-medium transition-colors flex items-center justify-center gap-2 shadow-lg">
+                <i class="ph ph-list-plus text-xl"></i> Add Task <kbd class="opacity-70 text-xs ml-2 border border-current rounded px-1.5 py-0.5">Ctrl+T</kbd>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes View -->
+      <div id="notes-view" class="view-section p-10 space-y-8 hidden h-full flex flex-col">
+        <header class="flex justify-between items-end shrink-0">
+          <div>
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Notes</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Capture your thoughts and ideas.</p>
+          </div>
+          <button id="btn-new-note" class="py-3 px-6 bg-brand hover:bg-brandDark text-white rounded-2xl font-medium transition-colors flex items-center gap-2 shadow-lg shadow-brand/20">
+            <i class="ph ph-plus-circle text-xl"></i> New Note
+          </button>
+        </header>
+
+        <div class="relative shrink-0">
+          <i class="ph ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+          <input type="text" id="note-search" placeholder="Search notes..." class="w-full bg-white dark:bg-[#1e293b] border border-gray-300 dark:border-gray-700 rounded-2xl py-4 pl-14 pr-4 text-base focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-gray-900 dark:text-white transition-all shadow-sm">
+        </div>
+
+        <div id="notes-list" class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20 fade-in content-start pr-2">
+          <!-- Notes will be rendered here -->
+        </div>
+
+        <!-- Note Editor Modal -->
+        <div id="note-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+          <div class="bg-white dark:bg-[#0f172a] w-full max-w-3xl rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden max-h-[90vh] scale-95 opacity-0 transition-all duration-300 ease-out" id="note-modal-content">
+            <div class="px-8 py-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#1e293b]/50">
+              <input type="text" id="note-title" placeholder="Note Title" class="bg-transparent text-2xl font-bold focus:outline-none w-full text-gray-900 dark:text-white placeholder-gray-400">
+              <div class="flex items-center gap-2 shrink-0 ml-4">
+                <button id="btn-delete-note" class="p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors hidden" title="Delete Note">
+                  <i class="ph ph-trash text-xl"></i>
+                </button>
+                <button id="btn-close-note" class="p-2.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-xl transition-colors shrink-0">
+                  <i class="ph ph-x text-xl"></i>
+                </button>
+              </div>
+            </div>
+            <textarea id="note-body" placeholder="Start typing your thoughts..." class="w-full flex-1 p-8 bg-transparent text-gray-800 dark:text-gray-200 text-lg leading-relaxed focus:outline-none resize-none min-h-[400px]"></textarea>
+            <div class="px-8 py-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#1e293b]/50 flex justify-end gap-4">
+              <button id="btn-cancel-note" class="px-6 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium transition-colors">Cancel</button>
+              <button id="btn-save-note" class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brandDark text-white font-medium shadow-lg shadow-brand/20 transition-all active:scale-95">Save Note</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks View -->
+      <div id="tasks-view" class="view-section p-10 space-y-8 hidden h-full flex flex-col">
+        <header class="flex justify-between items-end shrink-0">
+          <div>
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Tasks</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Manage your to-dos.</p>
+          </div>
+        </header>
+
+        <form id="task-form" class="flex gap-4 shrink-0 glass p-3 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm align-middle items-center">
+          <i class="ph ph-list-plus text-gray-400 text-xl ml-2"></i>
+          <input type="text" id="task-input" required placeholder="What needs to be done?" class="flex-1 bg-transparent border-none focus:ring-0 py-2 px-2 text-gray-900 dark:text-white placeholder-gray-500 outline-none text-base">
+          <div class="relative">
+            <select id="task-priority" class="appearance-none bg-gray-100 dark:bg-[#1e293b] border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-xl focus:ring-brand focus:border-brand block py-3 pl-4 pr-10 outline-none cursor-pointer">
+              <option value="low">Low Priority</option>
+              <option value="medium" selected>Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+            <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+          </div>
+          <button type="submit" class="bg-brand hover:bg-brandDark text-white px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 shadow-lg shadow-brand/20">
+            Add
+          </button>
+        </form>
+
+        <div class="flex-1 overflow-y-auto pr-2 pb-20">
+          <ul id="tasks-list" class="space-y-4 fade-in">
+            <!-- Tasks will be rendered here -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="settings-view" class="view-section p-10 space-y-10 hidden">
+        <header>
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Settings</h1>
+          <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Customize your experience.</p>
+        </header>
+
+        <div class="glass max-w-3xl rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
+          <div class="p-8 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"><i class="ph ph-palette text-brand"></i> Appearance</h3>
+            <div class="flex items-center justify-between py-2">
+              <div>
+                <p class="font-medium text-gray-900 dark:text-white text-lg">Theme</p>
+                <p class="text-gray-500">Toggle between light and dark mode.</p>
+              </div>
+              <button id="settings-theme-toggle" class="px-5 py-3 bg-gray-200 dark:bg-surface hover:bg-gray-300 dark:hover:bg-surfaceHover rounded-xl font-medium transition-colors flex items-center gap-2 text-gray-900 dark:text-white border border-transparent dark:border-gray-700 shadow-sm">
+                <i class="ph ph-moon dark:hidden"></i>
+                <i class="ph ph-sun hidden dark:block text-yellow-400"></i>
+                Toggle Theme
+              </button>
+            </div>
+          </div>
+          <div class="p-8 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"><i class="ph ph-database text-brand"></i> Data Management</h3>
+            <div class="flex items-center justify-between py-2">
+              <div>
+                <p class="font-medium text-gray-900 dark:text-white text-lg">Clear All Data</p>
+                <p class="text-gray-500">Permanently delete all notes and tasks.</p>
+              </div>
+              <button id="btn-clear-data" class="px-5 py-3 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 rounded-xl font-medium transition-colors border border-red-500/20">
+                Clear Data
+              </button>
+            </div>
+          </div>
+          <div class="p-8 bg-gray-50/50 dark:bg-[#1e293b]/30">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2"><i class="ph ph-info text-brand"></i> About</h3>
+            <p class="text-gray-600 dark:text-gray-400 font-medium">Personal Dashboard v1.0.0</p>
+            <p class="text-gray-500 mt-1">Built with Electron & Tailwind CSS</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>
